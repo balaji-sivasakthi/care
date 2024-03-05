@@ -21,7 +21,6 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          platforms: ${{ matrix.platform }}
           key: ${{ runner.os }}-buildx-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
           restore-keys: |
             ${{ runner.os }}-buildx-
@@ -30,8 +29,8 @@ jobs:
         uses: docker/bake-action@v4
         with:
           load: true
-          platforms: ${{ matrix.platform }}
           set: |
+              *.platform=${{ matrix.platform }}
               *.cache-from=type=local,src=/tmp/.buildx-cache
               *.cache-to=type=local,dest=/tmp/.buildx-cache-new
           files: docker-compose.yaml,docker-compose.local.yaml
